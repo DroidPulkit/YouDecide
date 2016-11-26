@@ -1,0 +1,20 @@
+{
+  "questions" : [
+    {
+      "statement" : "Who is the greatest developer?",
+      "options" : "Shivam Satija|Florent Champigny|Jake Wharton"
+    },
+    {
+      "statement" : "Which is the greatest library?",
+      "options" : "Crescento|Arc Layout|Picasso"
+    },
+    {
+      "statement" : "Who is the greatest developer?",
+      "options" : "Shivam Satija|Florent Champigny|Jake Wharton"
+    },
+    {
+      "statement" : "Which is the greatest library?",
+      "options" : "Crescento|Arc Layout|Picasso"
+    }
+  ]
+}
