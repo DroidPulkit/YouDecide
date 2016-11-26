@@ -50,6 +50,7 @@ public class QuestionFragment extends Fragment {
             RadioButton mRadioButton = new RadioButton(mContext);
             mRadioButton.setText(answers[i]);
             mRadioButton.setTag(i);
+            mRadioButton.setTextSize(16);
             mRadioGroup.addView(mRadioButton);
         }
 

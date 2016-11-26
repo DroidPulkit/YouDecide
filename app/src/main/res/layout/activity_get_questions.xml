@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_get_questions"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,9 @@
     <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"/>
+        android:background="@color/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <android.support.v4.view.ViewPager android:id="@+id/questionViewPager"
         android:layout_width="match_parent"
@@ -39,6 +42,13 @@
             android:text="Previous"
             android:textAllCaps="false"
             android:background="@color/colorAccent"/>
+
+        <com.intrusoft.indicator.Flare android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/btnPrevious"
+            android:layout_toLeftOf="@+id/btnNext"/>
 
         <Button android:id="@+id/btnNext"
             android:layout_width="wrap_content"

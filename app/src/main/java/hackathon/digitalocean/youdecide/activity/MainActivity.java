@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         btnAnswerQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent answerQuestionIntent = new Intent(mContext, GetQuestions.class);
+                Intent answerQuestionIntent = new Intent(mContext, ScanQRCodeActivity.class);
                 startActivity(answerQuestionIntent);
             }
         });
