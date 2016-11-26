@@ -3,6 +3,7 @@ package hackathon.digitalocean.youdecide.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -17,36 +18,45 @@ import hackathon.digitalocean.youdecide.R;
 public class ScanQRCodeActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
     private QRCodeReaderView myDecoderView;
+
     Context mContext = ScanQRCodeActivity.this;
-    Timer timer;
-    TimerTask timerTask;
-    String textUrl;
+
+    private Intent startSurveyActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qrcode);
 
+        startSurveyActivity = new Intent(mContext, GetQuestions.class);
         myDecoderView = (QRCodeReaderView) findViewById(R.id.qrCodeView);
         myDecoderView.setOnQRCodeReadListener(this);
 
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                Intent startSurveyActivity = new Intent(mContext, GetQuestions.class);
-                startSurveyActivity.putExtra("url", textUrl);
-                startActivity(startSurveyActivity);
-            }
-        };
     }
 
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
         if (!text.equals("")) {
             myDecoderView.getCameraManager().stopPreview();
-            textUrl = text;
-            timer.schedule(timerTask, 1000);
+
+            String[] tempArray=text.split("/");
+
+            String name=tempArray[4];
+            String surveyNumber=tempArray[5].substring(6);
+            String server=tempArray[0]+"/"+tempArray[1]+"/"+tempArray[2]+"/";
+
+            startSurveyActivity.putExtra("URL",text);
+            startSurveyActivity.putExtra("userName",name);
+            startSurveyActivity.putExtra("surveyNumber",surveyNumber);
+            startSurveyActivity.putExtra("server",server);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(startSurveyActivity);
+                }
+            }, 1000);
         } else {
             Toast.makeText(mContext, "Scanning failed", Toast.LENGTH_SHORT).show();
         }

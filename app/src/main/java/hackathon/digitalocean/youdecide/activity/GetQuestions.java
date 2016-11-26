@@ -1,14 +1,12 @@
 package hackathon.digitalocean.youdecide.activity;
 
 import android.content.Context;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -19,13 +17,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import developer.shivam.perfecto.ConvertInputStream;
+import developer.shivam.perfecto.OnNetworkRequest;
+import developer.shivam.perfecto.Perfecto;
 import hackathon.digitalocean.youdecide.R;
 import hackathon.digitalocean.youdecide.fragment.QuestionFragment;
 import hackathon.digitalocean.youdecide.pojo.Question;
@@ -44,19 +41,21 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
 
     Toolbar mToolbar;
 
-    String url;
+    String URL, userName, serverName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_questions);
 
-        url = getIntent().getStringExtra("url");
+        URL = getIntent().getStringExtra("URL");
+        userName = getIntent().getStringExtra("userName");
+        serverName = getIntent().getStringExtra("serverName");
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Servey");
+            getSupportActionBar().setTitle("Survey");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -64,30 +63,38 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
 
         questionViewPager = (ViewPager) findViewById(R.id.questionViewPager);
 
-        flare.setUpWithViewPager(questionViewPager);
-
         btnPrevious = (Button) findViewById(R.id.btnPrevious);
         btnPrevious.setOnClickListener(this);
         btnNext = (Button) findViewById(R.id.btnNext);
         btnNext.setOnClickListener(this);
 
-        if (!getQuestionsString().equals("")) {
-            questionList = parseQuestionsJson(getQuestionsString());
-            if (questionList.size() != 0) {
-                questionViewPager.setAdapter(new QuestionsFragmentAdapter(getSupportFragmentManager()));
-            }
-        }
+        getQuestionsString(URL);
     }
 
-    public String getQuestionsString() {
-        InputStream mInputStream = null;
-        try {
-            mInputStream = getAssets().open("sample.json");
-            return ConvertInputStream.toString(mInputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
+    public void getQuestionsString(String url) {
+        Perfecto.with(mContext).fromUrl(url).ofTypeGet().connect(new OnNetworkRequest() {
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(String response) {
+                if (!response.equals("")) {
+                    questionList = parseQuestionsJson(response);
+                    if (questionList.size() != 0) {
+                        questionViewPager.setAdapter(new QuestionsFragmentAdapter(getSupportFragmentManager()));
+                    }
+                    flare.setUpWithViewPager(questionViewPager);
+                }
+            }
+
+            @Override
+            public void onFailure(int responseCode, String s, String s1) {
+
+            }
+        });
     }
 
     public List<Question> parseQuestionsJson(String jsonString) {
