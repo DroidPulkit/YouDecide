@@ -28,8 +28,9 @@ import hackathon.digitalocean.youdecide.pojo.Question;
 public class GetQuestions extends AppCompatActivity {
 
     private Context mContext = GetQuestions.this;
+
     private ViewPager questionViewPager;
-    private TabLayout mTabLayout;
+
     private List<Question> questionList = new Vector<>();
 
     @Override
@@ -38,8 +39,6 @@ public class GetQuestions extends AppCompatActivity {
         setContentView(R.layout.activity_get_questions);
 
         questionViewPager = (ViewPager) findViewById(R.id.questionViewPager);
-        mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        mTabLayout.setupWithViewPager(questionViewPager);
 
         if (!getQuestionsString().equals("")) {
             questionList = parseQuestionsJson(getQuestionsString());
@@ -87,6 +86,7 @@ public class GetQuestions extends AppCompatActivity {
         public Fragment getItem(int position) {
             QuestionFragment questionFragment = new QuestionFragment();
             Bundle mBundle = new Bundle();
+            mBundle.putString("position", "Question " + position);
             mBundle.putString("statement", questionList.get(position).getQuestion());
             mBundle.putString("options", questionList.get(position).getAnswers());
             questionFragment.setArguments(mBundle);
@@ -96,11 +96,6 @@ public class GetQuestions extends AppCompatActivity {
         @Override
         public int getCount() {
             return questionList.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "Question " + (position + 1);
         }
     }
 }

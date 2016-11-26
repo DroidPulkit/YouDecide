@@ -29,7 +29,7 @@ public class QuestionFragment extends Fragment {
         super.onAttach(context);
 
         mContext = context;
-        questionString = getArguments().getString("statement");
+        questionString = getArguments().getString("position") + " " + getArguments().getString("statement");
         answerString = getArguments().getString("options");
 
         answers = answerString.split("\\|");
@@ -42,7 +42,7 @@ public class QuestionFragment extends Fragment {
 
         TextView tvQuestion = (TextView) fragmentView.findViewById(R.id.tvQuestions);
         if (!questionString.equals("")) {
-            tvQuestion.setText(questionString + "\n" + answerString);
+            tvQuestion.setText(questionString);
         }
 
         RadioGroup mRadioGroup = (RadioGroup) fragmentView.findViewById(R.id.answerRadioGroup);

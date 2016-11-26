@@ -16,7 +16,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.GetQuestions"></activity>
-        <activity android:name=".activity.GetQuestionsTwo"></activity>
     </application>
 
 </manifest>

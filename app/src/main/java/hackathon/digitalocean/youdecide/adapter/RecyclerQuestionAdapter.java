@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.List;
@@ -30,6 +32,13 @@ public class RecyclerQuestionAdapter extends RecyclerView.Adapter<RecyclerQuesti
     @Override
     public void onBindViewHolder(QuestionHolder holder, int position) {
         holder.tvQuestion.setText(questionList.get(position).getQuestion());
+        String[] answers = questionList.get(position).getAnswers().split("\\|");
+        for (String answer : answers) {
+            RadioButton radioButton = new RadioButton(mContext);
+            radioButton.setText(answer);
+            radioButton.setTag(answer);
+            holder.rdOptions.addView(radioButton);
+        }
     }
 
     @Override
@@ -40,11 +49,12 @@ public class RecyclerQuestionAdapter extends RecyclerView.Adapter<RecyclerQuesti
     class QuestionHolder extends RecyclerView.ViewHolder {
 
         TextView tvQuestion;
+        RadioGroup rdOptions;
 
         QuestionHolder(View itemView) {
             super(itemView);
-
             tvQuestion = (TextView) itemView.findViewById(R.id.tvQuestion);
+            rdOptions = (RadioGroup) itemView.findViewById(R.id.radioGroupOptions);
         }
     }
 }
