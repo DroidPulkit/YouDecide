@@ -37,7 +37,7 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
 
     private List<Question> questionList = new Vector<>();
 
-    private Button btnPrevious, btnNext;
+    Button btnPrevious, btnNext;
 
     Toolbar mToolbar;
 
@@ -85,8 +85,10 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
                     questionList = parseQuestionsJson(response);
                     if (questionList.size() != 0) {
                         questionViewPager.setAdapter(new QuestionsFragmentAdapter(getSupportFragmentManager()));
+                        questionViewPager.setOffscreenPageLimit(questionList.size());
+                        flare.setUpWithViewPager(questionViewPager);
+                        flare.requestLayout();
                     }
-                    flare.setUpWithViewPager(questionViewPager);
                 }
             }
 

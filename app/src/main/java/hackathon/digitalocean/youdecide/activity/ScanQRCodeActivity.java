@@ -1,9 +1,13 @@
 package hackathon.digitalocean.youdecide.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PointF;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -39,16 +43,16 @@ public class ScanQRCodeActivity extends AppCompatActivity implements QRCodeReade
         if (!text.equals("")) {
             myDecoderView.getCameraManager().stopPreview();
 
-            String[] tempArray=text.split("/");
+            String[] tempArray = text.split("/");
 
-            String name=tempArray[4];
-            String surveyNumber=tempArray[5].substring(6);
-            String server=tempArray[0]+"/"+tempArray[1]+"/"+tempArray[2]+"/";
+            String name = tempArray[4];
+            String surveyNumber = tempArray[5].substring(6);
+            String server = tempArray[0] + "/" + tempArray[1] + "/" + tempArray[2] + "/";
 
-            startSurveyActivity.putExtra("URL",text);
-            startSurveyActivity.putExtra("userName",name);
-            startSurveyActivity.putExtra("surveyNumber",surveyNumber);
-            startSurveyActivity.putExtra("server",server);
+            startSurveyActivity.putExtra("URL", text);
+            startSurveyActivity.putExtra("userName", name);
+            startSurveyActivity.putExtra("surveyNumber", surveyNumber);
+            startSurveyActivity.putExtra("server", server);
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -75,7 +79,26 @@ public class ScanQRCodeActivity extends AppCompatActivity implements QRCodeReade
     @Override
     protected void onResume() {
         super.onResume();
-        myDecoderView.getCameraManager().startPreview();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                myDecoderView.getCameraManager().startPreview();
+            } else {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, 200);
+            }
+        } else {
+            myDecoderView.getCameraManager().startPreview();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 200) {
+            if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                myDecoderView.getCameraManager().startPreview();
+            }
+        }
     }
 
     @Override
