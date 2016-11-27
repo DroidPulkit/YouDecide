@@ -39,25 +39,20 @@ public class ScanQRCodeActivity extends AppCompatActivity implements QRCodeReade
     public void onQRCodeRead(String text, PointF[] points) {
         if (!text.equals("")) {
             myDecoderView.getCameraManager().stopPreview();
-
+            System.out.println(text);
             String[] tempArray = text.split("/");
 
             String name = tempArray[4];
             String surveyNumber = tempArray[5].substring(6);
             String server = tempArray[0] + "/" + tempArray[1] + "/" + tempArray[2] + "/";
 
+            myDecoderView.getCameraManager().stopPreview();
+
             startSurveyActivity.putExtra("URL", text);
             startSurveyActivity.putExtra("userName", name);
             startSurveyActivity.putExtra("surveyNumber", surveyNumber);
             startSurveyActivity.putExtra("server", server);
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(startSurveyActivity);
-                }
-            }, 1000);
+            startActivity(startSurveyActivity);
         } else {
             Toast.makeText(mContext, "Scanning failed", Toast.LENGTH_SHORT).show();
         }

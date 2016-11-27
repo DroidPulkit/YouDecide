@@ -155,7 +155,8 @@ public class ConductSurvey extends AppCompatActivity {
                             JSONObject object = new JSONObject(s);
                             if (object.getString("status").equals("1")) {
                                 Toast.makeText(ConductSurvey.this, "Successfully Uploaded", Toast.LENGTH_SHORT).show();
-                                showImage(object.getString("QRcode"));
+                                //showImage(object.getString("QRcode"));
+                                ConductSurvey.this.finish();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

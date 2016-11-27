@@ -49,6 +49,10 @@ public class LoginActivity extends AppCompatActivity implements
                 .replace(R.id.container_layout, signInFragment, "Sign In Fragment")
                 .addToBackStack(null)
                 .commit();
+        if (getSharedPreferences(StaticData.USER_INFO, MODE_PRIVATE).getString("fullName", "").length() > 1) {
+            this.finish();
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 
     @Override

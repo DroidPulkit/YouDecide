@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import hackathon.digitalocean.youdecide.R;
+import hackathon.digitalocean.youdecide.StaticData;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,11 +23,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
-    }
-
-    public void onClick(View view) {
-        startActivity(new Intent(MainActivity.this, ConductSurvey.class));
-
         btnCheckResults = (Button) findViewById(R.id.check_result);
         btnCheckResults.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,5 +31,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(checkResult);
             }
         });
+        findViewById(R.id.sign_out).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getSharedPreferences(StaticData.USER_INFO,MODE_PRIVATE).edit().clear().commit();
+                startActivity(new Intent(MainActivity.this,LoginActivity.class));
+            }
+        });
+    }
+
+    public void onClick(View view) {
+        startActivity(new Intent(MainActivity.this, ConductSurvey.class));
     }
 }

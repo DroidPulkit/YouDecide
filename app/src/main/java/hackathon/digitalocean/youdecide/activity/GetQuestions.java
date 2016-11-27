@@ -54,6 +54,7 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
 
         URL = getIntent().getStringExtra("URL");
         userName = getIntent().getStringExtra("userName");
+        System.out.println(userName);
         surveyNumber = getIntent().getStringExtra("surveyNumber");
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -172,9 +173,9 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
         } else if (questionViewPager.getCurrentItem() == questionList.size() - 1) {
             JSONObject parentObject = new JSONObject();
             try {
-                parentObject.put("UserName", userName);
-                parentObject.put("SurveyNumber", surveyNumber);
-                parentObject.put("Answer", getAnswers());
+                parentObject.put("userName", userName);
+                parentObject.put("surveyNumber", surveyNumber);
+                parentObject.put("answers", getAnswers());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -192,6 +193,8 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onSuccess(String response) {
                             Log.d("Response", response);
+                            Toast.makeText(mContext, "Successfully Submitted", Toast.LENGTH_SHORT).show();
+                            onBackPressed();
                         }
 
                         @Override
