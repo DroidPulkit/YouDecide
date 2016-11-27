@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "323127452693",
+    "firebase_url": "https://you-decide-d33d2.firebaseio.com",
+    "project_id": "you-decide-d33d2",
+    "storage_bucket": "you-decide-d33d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323127452693:android:eacea88d83e48759",
+        "android_client_info": {
+          "package_name": "hackathon.digitalocean.youdecide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323127452693-u9k3vkhk6muhsskaujdil6lmhgn8ail8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvPMytxb_b8WW1xEcmL30eSTPMNtUVJ24"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
