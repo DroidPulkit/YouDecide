@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Layout;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,18 +34,25 @@ public class CheckResultActivity extends AppCompatActivity {
     Context mContext = CheckResultActivity.this;
     List<Survey> surveyList = new ArrayList<>();
     ListView lvSurveyList;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_result);
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Surveys list");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         lvSurveyList = (ListView) findViewById(R.id.lvSurveyList);
         lvSurveyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent surveyResult = new Intent(mContext, SurveyResultActivity.class);
-                surveyResult.putExtra("survey", surveyList.get(i));
+                surveyResult.putExtra("survey_question", surveyList.get(i).getQuestion());
+                surveyResult.putExtra("survey_answer", surveyList.get(i).getAnswers());
                 startActivity(surveyResult);
             }
         });
@@ -122,5 +131,13 @@ public class CheckResultActivity extends AppCompatActivity {
             tvSurvey.setText("Survey " + (i + 1));
             return view;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
