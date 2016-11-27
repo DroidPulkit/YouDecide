@@ -4,6 +4,7 @@ public class Question {
 
     String question = "";
     String answers = "";
+    String userAnswer = "";
 
     public String getQuestion() {
         return question;
@@ -19,5 +20,13 @@ public class Question {
 
     public void setAnswers(String answers) {
         this.answers = answers;
+    }
+
+    public String getUserAnswer() {
+        return userAnswer;
+    }
+
+    public void setUserAnswer(String userAnswer) {
+        this.userAnswer = userAnswer;
     }
 }
