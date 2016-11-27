@@ -1,10 +1,8 @@
 package hackathon.digitalocean.youdecide.activity;
 
 import android.annotation.TargetApi;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.IoUtils;
 
@@ -61,6 +60,8 @@ public class ConductSurvey extends AppCompatActivity {
     Button newQuestion;
     String url;
     private boolean permi = false;
+    public ImageLoader imageLoader;
+    public DisplayImageOptions Ioptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,13 @@ public class ConductSurvey extends AppCompatActivity {
         questions = new ArrayList<>();
         addOption();
         addOption();
+        imageLoader = ImageLoader.getInstance();
+
+        Ioptions = new DisplayImageOptions.Builder().cacheInMemory(true)
+                .cacheOnDisc(true).resetViewBeforeLoading(true)
+                .showImageForEmptyUri(R.mipmap.ic_launcher)
+                .showImageOnFail(R.mipmap.ic_launcher)
+                .showImageOnLoading(R.mipmap.ic_launcher).build();
         question = (EditText) findViewById(R.id.question);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -115,58 +123,54 @@ public class ConductSurvey extends AppCompatActivity {
         try {
             finish = false;
             newQuestion.performClick();
-                if (questions.size() > 1) {
-                    JSONObject data = new JSONObject();
-                    JSONObject object = new JSONObject();
-                    JSONArray question = new JSONArray();
-                    for (int i = 0; i < questions.size(); i++) {
-                        JSONObject ques = new JSONObject();
-                        ques.put("statement", questions.get(i).getQuestion());
-                        String option = questions.get(i).getOptions().get(0);
-                        for (int j = 1; j < questions.get(i).getOptions().size(); j++)
-                            option = option.concat("|").concat(questions.get(i).getOptions().get(j));
-                        ques.put("options", option);
-                        question.put(ques);
-                    }
-                    object.put("questions", question);
-                    data.put("data", object);
-                    data.put("userName", getSharedPreferences(StaticData.USER_INFO, MODE_PRIVATE).getString("userName", ""));
-                    data.put("serverPath", StaticData.SERVER_PATH);
-                    Log.d("QUESTION", data.toString());
-                    Toast.makeText(this, "Finished", Toast.LENGTH_SHORT).show();
-                    Perfecto.with(this).fromUrl(StaticData.POST_QUESTION).ofTypePost(data).connect(new OnNetworkRequest() {
-                        @Override
-                        public void onStart() {
-
-                        }
-
-                        @Override
-                        public void onSuccess(String s) {
-                            Log.d("Response", s);
-                            try {
-                                JSONObject object = new JSONObject(s);
-                                if (object.getString("status").equals("1")) {
-                                    Toast.makeText(ConductSurvey.this, "Successfully Uploaded", Toast.LENGTH_SHORT).show();
-                                    showImage(object.getString("QRcode"));
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s, String s1) {
-                            Log.d("Fail", i + "  \n" + s + "  \n " + s1);
-                        }
-                    });
+            if (questions.size() > 1) {
+                JSONObject data = new JSONObject();
+                JSONObject object = new JSONObject();
+                JSONArray question = new JSONArray();
+                for (int i = 0; i < questions.size(); i++) {
+                    JSONObject ques = new JSONObject();
+                    ques.put("statement", questions.get(i).getQuestion());
+                    String option = questions.get(i).getOptions().get(0);
+                    for (int j = 1; j < questions.get(i).getOptions().size(); j++)
+                        option = option.concat("|").concat(questions.get(i).getOptions().get(j));
+                    ques.put("options", option);
+                    question.put(ques);
                 }
+                object.put("questions", question);
+                data.put("data", object);
+                data.put("userName", getSharedPreferences(StaticData.USER_INFO, MODE_PRIVATE).getString("userName", ""));
+                data.put("serverPath", StaticData.SERVER_PATH);
+                Log.d("QUESTION", data.toString());
+                Toast.makeText(this, "Finished", Toast.LENGTH_SHORT).show();
+                Perfecto.with(this).fromUrl(StaticData.POST_QUESTION).ofTypePost(data).connect(new OnNetworkRequest() {
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.d("Response", s);
+                        try {
+                            JSONObject object = new JSONObject(s);
+                            if (object.getString("status").equals("1")) {
+                                Toast.makeText(ConductSurvey.this, "Successfully Uploaded", Toast.LENGTH_SHORT).show();
+                                showImage(object.getString("QRcode"));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s, String s1) {
+                        Log.d("Fail", i + "  \n" + s + "  \n " + s1);
+                    }
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void saveQRCodeToGallery(String qRcode) {
-
     }
 
     public void addOption() {
@@ -194,7 +198,7 @@ public class ConductSurvey extends AppCompatActivity {
         addOption();
     }
 
-    private void showImage(String url) {
+    private void showImage(final String url) {
         if (ActivityCompat.checkSelfPermission(ConductSurvey.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestStoragePermission();
             System.out.println("Request not granted");
@@ -203,24 +207,23 @@ public class ConductSurvey extends AppCompatActivity {
         } else {
             permi = true;
             System.out.println("Request granted");
-            File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "Success Gold");
+            File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "YouDecide");
             if (!directory.exists()) {
                 if (!directory.mkdirs()) {
                     System.out.println("directory not created");
                 }
             }
 
-            final File outputFile = saveImage(url);
             AlertDialog.Builder builder = new AlertDialog.Builder(ConductSurvey.this);
             View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null);
             builder.setView(view);
             ImageView imageView = (ImageView) view.findViewById(R.id.qr_code_image);
-            ImageLoader.getInstance().displayImage(url,imageView);
-            final Dialog dialog = builder.create();
+            imageLoader.displayImage(url, imageView, Ioptions);
             Button share = (Button) view.findViewById(R.id.share);
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    final File outputFile = saveImage(url);
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_TEXT, "- via Success Gold");
@@ -232,11 +235,10 @@ public class ConductSurvey extends AppCompatActivity {
             view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(dialog.isShowing())
-                        dialog.dismiss();
+
                 }
             });
-            dialog.show();
+            builder.show();
         }
     }
 

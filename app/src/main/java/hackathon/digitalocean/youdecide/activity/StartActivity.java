@@ -23,7 +23,7 @@ public class StartActivity extends AppCompatActivity {
         findViewById(R.id.answer_survey).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(StartActivity.this, ScanQRCodeActivity.class));
             }
         });
     }

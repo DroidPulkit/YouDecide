@@ -20,15 +20,23 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:support-v4:25.0.1'
-    compile 'com.android.support:design:25.0.1'
-    compile 'com.android.support:cardview-v7:25.0.1'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:cardview-v7:25.0.0'
+    compile 'com.android.support:recyclerview-v7:25.0.0'
+    compile 'com.github.developer-shivam:perfecto:1.0'
+    compile 'com.github.IntruderShanky:Flare:1.0.2'
+    compile 'com.github.IntruderShanky:scatter-piechart:1.0.0'
+    compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:1.0.0'
+
     compile 'com.github.IntruderShanky:Squint:2.1.0'
     compile 'com.google.firebase:firebase-auth:9.4.0'
     compile 'com.google.android.gms:play-services-auth:9.4.0'
     compile'com.github.developer-shivam:perfecto:1.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    testCompile 'junit:junit:4.12'
 }
 
 apply plugin: 'com.google.gms.google-services'
