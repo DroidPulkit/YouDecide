@@ -14,9 +14,6 @@ import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import hackathon.digitalocean.youdecide.R;
 
 public class ScanQRCodeActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {

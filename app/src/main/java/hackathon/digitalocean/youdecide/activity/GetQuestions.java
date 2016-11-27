@@ -8,8 +8,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.intrusoft.indicator.Flare;
 
@@ -41,7 +43,9 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
 
     Toolbar mToolbar;
 
-    String URL, userName, serverName;
+    String URL, userName, surveyNumber;
+
+    int[] selectedAnswers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +54,7 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
 
         URL = getIntent().getStringExtra("URL");
         userName = getIntent().getStringExtra("userName");
-        serverName = getIntent().getStringExtra("serverName");
+        surveyNumber = getIntent().getStringExtra("surveyNumber");
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -86,6 +90,10 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
                     if (questionList.size() != 0) {
                         questionViewPager.setAdapter(new QuestionsFragmentAdapter(getSupportFragmentManager()));
                         questionViewPager.setOffscreenPageLimit(questionList.size());
+                        selectedAnswers = new int[questionList.size()];
+                        for (int i = 0; i < selectedAnswers.length; i++) {
+                            selectedAnswers[i] = -1;
+                        }
                         flare.setUpWithViewPager(questionViewPager);
                         flare.requestLayout();
                     }
@@ -135,7 +143,7 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
         public Fragment getItem(int position) {
             QuestionFragment questionFragment = new QuestionFragment();
             Bundle mBundle = new Bundle();
-            mBundle.putString("position", "Question " + ( position + 1) + " : ");
+            mBundle.putInt("position", position);
             mBundle.putString("statement", questionList.get(position).getQuestion());
             mBundle.putString("options", questionList.get(position).getAnswers());
             questionFragment.setArguments(mBundle);
@@ -155,8 +163,59 @@ public class GetQuestions extends AppCompatActivity implements View.OnClickListe
     }
 
     public void incrementViewPagerPosition() {
-        if (questionViewPager.getCurrentItem() != questionList.size() - 1) {
+        if (questionViewPager.getCurrentItem() == questionList.size() - 2) {
             questionViewPager.setCurrentItem(questionViewPager.getCurrentItem() + 1);
+            btnNext.setText("Finish");
+        } else if (questionViewPager.getCurrentItem() < questionList.size() - 1) {
+            questionViewPager.setCurrentItem(questionViewPager.getCurrentItem() + 1);
+            btnNext.setText("Next");
+        } else if (questionViewPager.getCurrentItem() == questionList.size() - 1) {
+            JSONObject parentObject = new JSONObject();
+            try {
+                parentObject.put("UserName", userName);
+                parentObject.put("SurveyNumber", surveyNumber);
+                parentObject.put("Answer", getAnswers());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println(parentObject);
+
+            Perfecto.with(mContext).fromUrl("http://139.59.46.237/setAnswers.php")
+                    .ofTypePost(parentObject)
+                    .connect(new OnNetworkRequest() {
+                        @Override
+                        public void onStart() {
+
+                        }
+
+                        @Override
+                        public void onSuccess(String response) {
+                            Log.d("Response", response);
+                        }
+
+                        @Override
+                        public void onFailure(int i, String s, String s1) {
+
+                        }
+                    });
+
         }
+    }
+
+    public void saveAnswer(int position, int answer) {
+        selectedAnswers[position] = answer;
+    }
+
+    public String getAnswers() {
+        String answers = "";
+        for (int i = 0; i < selectedAnswers.length; i++) {
+            if (selectedAnswers[i] != -1) {
+                answers += selectedAnswers[i] + ",";
+            } else {
+                answers = "Question " + (i + 1) + " not answered";
+            }
+        }
+        return answers;
     }
 }

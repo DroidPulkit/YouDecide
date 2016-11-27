@@ -3,6 +3,7 @@
     package="hackathon.digitalocean.youdecide">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera2" />
 
     <application
@@ -19,7 +20,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.GetQuestions" />
-        <activity android:name=".activity.ScanQRCodeActivity"></activity>
+        <activity android:name=".activity.ScanQRCodeActivity" />
+        <activity android:name=".activity.CheckResultActivity" />
+        <activity android:name=".activity.SurveyResultActivity"></activity>
     </application>
 
 </manifest>

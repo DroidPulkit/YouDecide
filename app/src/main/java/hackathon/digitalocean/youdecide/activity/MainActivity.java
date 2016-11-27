@@ -11,7 +11,7 @@ import hackathon.digitalocean.youdecide.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnAnswerQuestion;
+    Button btnAnswerQuestion, btnCheckResults;
     Context mContext = MainActivity.this;
 
     @Override
@@ -25,6 +25,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent answerQuestionIntent = new Intent(mContext, ScanQRCodeActivity.class);
                 startActivity(answerQuestionIntent);
+            }
+        });
+
+        btnCheckResults = (Button) findViewById(R.id.btnCheckResult);
+        btnCheckResults.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent checkResult = new Intent(mContext, CheckResultActivity.class);
+                startActivity(checkResult);
             }
         });
     }
