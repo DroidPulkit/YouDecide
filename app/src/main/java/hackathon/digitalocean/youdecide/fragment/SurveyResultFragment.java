@@ -22,8 +22,8 @@ public class SurveyResultFragment extends Fragment {
     Context mContext;
     String question = "";
     String answerString = "";
-    String answer[];
-    String answers[];
+    String answer[] = new String[0];
+    String answers[] = new String[0];
     private int totalUser = 0;
 
     public SurveyResultFragment () {
@@ -64,19 +64,23 @@ public class SurveyResultFragment extends Fragment {
         tvAnswer.setText("Answers :" + "\n" + answerString);
 
         PieChart pieChart = (PieChart) view.findViewById(R.id.pieChart);
-        List<ChartData> data = new ArrayList<>();
-        int[] color = new int[5];
-        color[0] = Color.BLUE;
-        color[1] = Color.GREEN;
-        color[2] = Color.GRAY;
-        color[3] = Color.YELLOW;
-        color[4] = Color.RED;
 
-        for (int i = 0; i < answer.length; i++) {
-            data.add(new ChartData(answer[i] + " " + Integer.parseInt(answers[i]) * 100 / totalUser + "%",
-                    Integer.parseInt(answers[i]) * 100 / totalUser));
+        if (answers.length != 0) {
+            List<ChartData> data = new ArrayList<>();
+            int[] color = new int[5];
+            color[0] = Color.BLUE;
+            color[1] = Color.GREEN;
+            color[2] = Color.GRAY;
+            color[3] = Color.YELLOW;
+            color[4] = Color.RED;
+
+            for (int i = 0; i < answer.length; i++) {
+                data.add(new ChartData(answer[i] + " " + Integer.parseInt(answers[i]) * 100 / totalUser + "%",
+                        Integer.parseInt(answers[i]) * 100 / totalUser));
+            }
+            pieChart.setChartData(data);
         }
-        pieChart.setChartData(data);
+
         return view;
     }
 }
